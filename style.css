@@ -1,1 +1,53 @@
-/* My CSS */
+/* :root CSS, defining variables */
+:root {
+  --bright: lightskyblue;
+  --font: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+/* Overall global CSS */
+html, body {
+  font-family: var(--font);
+  font-size: 25px;
+}
+
+/* all button CSS */
+button {
+  font-size: 20px;
+  padding: 10px;
+}
+
+/* top bar CSS containing timer and score divs */
+section {
+  display: block;
+}
+#score {
+  display: inline;
+  float: left;
+}
+
+#timer {
+  display: inline;
+  float: right;
+  margin: 12px;
+}
+
+/* application CSS */
+#app {
+  text-align: center;
+  margin: auto;
+  width: 45%;
+  padding-top: 10%
+}
+
+h1 {
+  font-size: 60px;
+}
+
+/* question selection CSS */
+ul {
+  list-style: none;
+}
+
+li {
+  background-color: var(--bright);
+}
