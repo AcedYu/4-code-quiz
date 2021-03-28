@@ -44,10 +44,26 @@ h1 {
 }
 
 /* question selection CSS */
+h2 {
+  font-size: 35px;
+}
+
 ul {
   list-style: none;
+  padding-left: 0;
 }
 
 li {
+  width: 550px;
+  font-family: consolas;
   background-color: var(--bright);
+  margin: auto;
+  margin-bottom: 1%;
+  border: solid black 2px;
+  border-radius: 16px;
+}
+
+li:hover {
+  opacity: 50%;
+  cursor: pointer;
 }
