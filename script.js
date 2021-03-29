@@ -210,6 +210,7 @@ var renderQuestion = (quizArray, index) => {
     } else {
       concludeQuiz(true);
     }
+    renderNote(true);
   });
   // push the node onto the choices array
   choices.push(answerNode);
@@ -228,6 +229,7 @@ var renderQuestion = (quizArray, index) => {
       } else {
         concludeQuiz(true);
       }
+      renderNote(false);
     });
     choices.push(node);
   }
@@ -242,6 +244,34 @@ var renderQuestion = (quizArray, index) => {
   // Append all of the items to the app div
   app.append(question);
   app.append(selection);
+}
+
+// Render a fading notification on accuracy
+var renderNote = (flag) => {
+  note.innerHTML = "";
+  // Generate stylized line break
+  var line = document.createElement("hr");
+  // Generate Message based on flag true or false
+  var message = document.createElement("p");
+  if (flag) {
+    message.innerHTML = "Correct!";
+  } else {
+    message.innerHTML = "Wrong!";
+  }
+  note.append(line);
+  note.append(message);
+  fade(note);
+}
+
+// fade function to delete note from the screen after a short delay (500ms)
+var fade = (element) => {
+  var seconds = 1;
+  var timer = setInterval(function () {
+      seconds--;
+      if (seconds === 0) {
+        element.innerHTML = "";
+      }
+  }, 500);
 }
 
 // Timer function
@@ -275,12 +305,11 @@ var concludeQuiz = (flag) => {
   h1.innerHTML = "Quiz Complete";
 
   // True flag means all question completion, false flag means time ran out before completion change innertext of P element based off of flag
+  var message = document.createElement("p");
   if (flag) {
     stopTime = true;
-    var message = document.createElement("p");
     message.innerHTML = "Congratulations! You've completed all of the questions."
   } else {
-    var message = document.createElement("p");
     message.innerHTML = "Time's up!"
   }
 

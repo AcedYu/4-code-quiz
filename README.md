@@ -9,6 +9,8 @@ It contains notable features such as:
 - game resolution based once the time expires or all questions are answered
 - A locally saved scorescreen with recorded user initials input
 
+![Image](demo.png)
+
 Due: Tuesday, March 30, 2021 11:59 PM
 
 ## Built With

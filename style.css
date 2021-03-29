@@ -68,6 +68,11 @@ ul li:hover {
   cursor: pointer;
 }
 
+/* Notification CSS */
+#notification {
+  width: 45%;
+  margin: auto;
+}
 /* Scoreboard CSS */
 ol {
   padding-left: 0;
