@@ -22,12 +22,11 @@ var stopTime = false;
 var points = 0;
 
 // global variable for the high score list
-var highScores = {
-  AY: 20,
-  AB: 10,
-  TY: 19,
-  KL: 15
-};
+// if there is data in the local storage, use it for the highScores object
+var highScores = JSON.parse(localStorage.getItem("scores"));
+if (!highScores) {
+  highScores = {};
+}
 
 // establish quiz questions
 var questions = [
@@ -343,6 +342,9 @@ var addScore = (player) => {
   else {
     highScores[player] = points;
   }
+  // update local storage with new updated highScores object
+  localStorage.setItem("scores", JSON.stringify(highScores));
+  // render high score view screen
   viewScores();
 }
 
@@ -400,7 +402,10 @@ var viewScores = () => {
   var deletebtn = document.createElement("button");
   deletebtn.innerHTML = "Clear High Scores";
   deletebtn.addEventListener("click", () => {
+    // clear the highScores Object
     highScores = {};
+    // record our clear into local storage
+    localStorage.setItem("scores", JSON.stringify(highScores));
     viewScores();
   });
   // append all parts to app
