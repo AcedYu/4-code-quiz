@@ -53,7 +53,7 @@ ul {
   padding-left: 0;
 }
 
-li {
+ul li {
   width: 550px;
   font-family: consolas;
   background-color: var(--bright);
@@ -63,7 +63,18 @@ li {
   border-radius: 16px;
 }
 
-li:hover {
+ul li:hover {
   opacity: 50%;
   cursor: pointer;
+}
+
+/* Scoreboard CSS */
+ol {
+  padding-left: 0;
+}
+
+ol li {
+  background-color: var(--bright);
+  margin: auto;
+  margin-bottom: 1%;
 }

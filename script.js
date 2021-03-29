@@ -9,13 +9,25 @@
 // Example Entry: {AB: 100, CD:[90, 80]}
 
 // Grab all of sections on the HTML page.
-var body = document.querySelector("body");
 var timer = document.querySelector("#timer");
 var score = document.querySelector("#score");
 var app = document.querySelector("#app");
+var note = document.querySelector("#notification");
 
-// define global variable for the timer
-secondsLeft = 0;
+// global variables for the timer
+var secondsLeft = 0;
+var stopTime = false;
+
+// global variable for score points
+var points = 0;
+
+// global variable for the high score list
+var highScores = {
+  AY: 20,
+  AB: 10,
+  TY: 19,
+  KL: 15
+};
 
 // establish quiz questions
 var questions = [
@@ -113,17 +125,27 @@ var questions = [
     question: "Which of the following property is used to increase or decrease the size of a font?",
     answer: "font-size",
     wrong: ["font", "font-family", "font-weight"]
+  },
+  {
+    question: `Which of the following data types holds the values for values such as "true" and "false"?`,
+    answer: "boolean",
+    wrong: ["number", "string", "object"]
   }
 ];
 
 var init = () => {
   // Render main screen header: title, description about the Code Quiz, high scores button, and begin quiz button
+  // Clear out any html before we begin
+  app.innerHTML = "";
+  timer.innerHTML = "";
+  score.innerHTML = "";
+  note.innerHTML = "";
   // Title
   var h1 = document.createElement("h1");
   h1.innerHTML = "Coding Quiz Game"
   // Description
   var description = document.createElement("p");
-  description.innerHTML = "Answer the following questions before time runs out! Wrong answers will penalize you with a 10 second time reduction."
+  description.innerHTML = "Answer the following questions before time runs out! The timer will be set to 60 seconds. Wrong answers will penalize you with a 10 second time reduction."
 
   // Start Button
   var startbtn = document.createElement("button");
@@ -141,7 +163,7 @@ var init = () => {
   app.append(startbtn);
 
   // set time to 0, will reset when the game begins
-  timer.innerHTML = "Time: " + secondsLeft;
+  timer.innerHTML = "Time: 0"
 
   // create button for high scores
   var scorebtn = document.createElement("button");
@@ -183,8 +205,11 @@ var renderQuestion = (quizArray, index) => {
   answerNode.setAttribute("class", "correct");
   // add event listener to the list item
   answerNode.addEventListener("click", () => {
+    points++;
     if(quizArray[index+1]) {
       renderQuestion(quizArray, index + 1);
+    } else {
+      concludeQuiz(true);
     }
   });
   // push the node onto the choices array
@@ -197,9 +222,12 @@ var renderQuestion = (quizArray, index) => {
     node.innerHTML = incorrect;
     // Add event listener to the node
     node.addEventListener("click", () => {
-      penalty();
+      // Add the time deduction penalty
+      secondsLeft -= 10;
       if(quizArray[index+1]) {
         renderQuestion(quizArray, index + 1);
+      } else {
+        concludeQuiz(true);
       }
     });
     choices.push(node);
@@ -217,6 +245,7 @@ var renderQuestion = (quizArray, index) => {
   app.append(selection);
 }
 
+// Timer function
 var startTime = () => {
   // Set initial time to 60 seconds
   secondsLeft = 60;
@@ -229,21 +258,156 @@ var startTime = () => {
     // Conclusion when timer hits 0, launches concludeQuiz
     if (secondsLeft <= 0) {
       clearInterval(timerInterval);
-      concludeQuiz();
+      concludeQuiz(false);
+    }
+    // Stop the timer if stopTime flag is true. Stops the timer when the quiz concludes by finishing all of the questions
+    if (stopTime) {
+      clearInterval(timerInterval);
     }
   }, 1000);
 }
 
+// Conclude quiz function, accepts a boolean
+var concludeQuiz = (flag) => {
+  // Clear App div
+  app.innerHTML = "";
+  // Create Quiz Complete announcement
+  var h1 = document.createElement("h1");
+  h1.innerHTML = "Quiz Complete";
+
+  // True flag means all question completion, false flag means time ran out before completion change innertext of P element based off of flag
+  if (flag) {
+    stopTime = true;
+    var message = document.createElement("p");
+    message.innerHTML = "Congratulations! You've completed all of the questions."
+  } else {
+    var message = document.createElement("p");
+    message.innerHTML = "Time's up!"
+  }
+
+  // Create the points result
+  var result = document.createElement("h2");
+  result.innerHTML = "Your Score: " + points;
+
+  // Create initials form
+  var form = document.createElement("form");
+  var label =  document.createElement("label");
+  label.setAttribute("for", "initials");
+  label.innerHTML = "Enter your initials here: "
+  var input = document.createElement("input");
+  input.setAttribute("type", "text");
+  input.setAttribute("id", "initials");
+  input.setAttribute("name", "initials");
+  input.setAttribute("maxlength", "2");
+  // a cool attribute to prevent the input from accepting anything other than a lowercase alphabetical value
+  input.setAttribute("onkeyup", "this.value = this.value.replace(/[^a-z]/, '')");
+  var submitbtn = document.createElement("input");
+  submitbtn.setAttribute("type", "submit");
+  submitbtn.setAttribute("value", "Submit");
+  // Add event listener on form submit
+  form.addEventListener("submit", (event) => {
+    // prevent default submission event
+    event.preventDefault();
+    // capitalize our initials input
+    var capitalize = input.value.toUpperCase();
+    // add our initials to the addScore function
+    addScore(capitalize);
+  });
+
+  // Append parts to the form
+  form.append(label);
+  form.append(input);
+  form.append(submitbtn);
+
+  // Append Elements onto screen
+  app.append(h1);
+  app.append(message);
+  app.append(result);
+  app.append(form);
+}
+
+// Add Score function
+var addScore = (player) => {
+  // if the player has multiple scores under a set of initaials already then send the score to the array
+  if (Array.isArray(highScores[player])) {
+    highScores[player].push(points);
+  }
+  // if the player has only one other score, turn the value into an array storing the past and present score
+  else if (highScores[player]) {
+    var scoresArray = [];
+    scoresArray.push(highScores[player]);
+    scoresArray.push(points);
+    highScores[player] = scoresArray;
+  }
+  // or else assign the score to the key of the player intials
+  else {
+    highScores[player] = points;
+  }
+  viewScores();
+}
+
+// View Scores function
 var viewScores = () => {
-  console.log("placeholder for score viewing");
-}
+  // Clear the screen
+  app.innerHTML = "";
+  timer.innerHTML = "";
+  score.innerHTML = "";
+  // Define our high scores display array
+  var rankings = [];
+  // transform our object into an array of arrays with each array holding 2 values, index 0 being the key, and index 1 being the score value
+  // iterate through the object
+  for (var key in highScores) {
+    // if highScores[key] is an array iterate through the array and add all of values to the rankings array
+    if (Array.isArray(highScores[key])) {
+      for (var i = 0 ; i < highScores[key].length; i++) {
+        var entry = [];
+        entry.push(key);
+        entry.push(highScores[key][i]);
+        rankings.push(entry);
+      }
+    }
+    // otherwise add the entry found at the object key
+    else {
+      var entry = [];
+      entry.push(key);
+      entry.push(highScores[key]);
+      rankings.push(entry);
+    }
+  }
+  // sort the rankings value in descending order
+  rankings = rankings.sort((a, b) => b[1]-a[1]);
 
-var concludeQuiz = () => {
-  console.log("placeholder for quiz concluding");
-}
+  // create the html to display the scores
+  var scoreTitle = document.createElement("h1");
+  scoreTitle.innerHTML = "High Scores";
+  var scoreList =  document.createElement("ol");
 
-var penalty = () => {
-  secondsLeft = secondsLeft - 10;
+  // get each score into the ordered list
+  for (var i = 0; i < rankings.length; i++) {
+    var scoreEntry = document.createElement("li");
+    scoreEntry.innerHTML = rankings[i][0] + " - " + rankings[i][1];
+    scoreList.append(scoreEntry);
+  }
+
+  // add return to beginning button
+  var returnbtn = document.createElement("button");
+  returnbtn.innerHTML = "Go Back";
+  returnbtn.addEventListener("click", () => {
+    init();
+  });
+
+  // add delete all scores button
+  var deletebtn = document.createElement("button");
+  deletebtn.innerHTML = "Clear High Scores";
+  deletebtn.addEventListener("click", () => {
+    highScores = {};
+    viewScores();
+  });
+  // append all parts to app
+  app.append(scoreTitle);
+  app.append(scoreList);
+  app.append(returnbtn);
+  app.append(deletebtn);
 }
 
 // start init
