@@ -1,6 +1,7 @@
 /* :root CSS, defining variables */
 :root {
   --bright: lightskyblue;
+  --darker: rgb(137, 192, 255);
   --font: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
@@ -12,8 +13,18 @@ html, body {
 
 /* all button CSS */
 button {
+  margin: 3px;
   font-size: 20px;
   padding: 10px;
+  background-color: var(--bright);
+  color: black;
+  border: solid var(--bright) 3px;
+  border-radius: 15px;
+}
+
+button:hover {
+  background-color: var(--darker);
+  border: solid var(--darker) 3px;
 }
 
 /* top bar CSS containing timer and score divs */
