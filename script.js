@@ -338,6 +338,11 @@ var concludeQuiz = (flag) => {
   form.addEventListener("submit", (event) => {
     // prevent default submission event
     event.preventDefault();
+    // if the input bar is empty, alert the user and insist for an entry
+    if (!input.value) {
+      alert("Please enter your initials (no blank entries accepted)");
+      return;
+    }
     // capitalize our initials input
     var capitalize = input.value.toUpperCase();
     // add our initials to the addScore function
