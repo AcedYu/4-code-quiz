@@ -178,6 +178,8 @@ var init = () => {
 
 // start the Quiz function
 var startQuiz = () => {
+  // found a bug where clicking the high score during the quiz did not stop the timer, added a feature to delete the high score button while doing the quiz
+  score.innerHTML = "";
   var quiz =  questions.sort(() => Math.random() - 0.5);
   renderQuestion(quiz, 0);
 }
